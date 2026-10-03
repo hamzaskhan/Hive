@@ -11,4 +11,8 @@ export default defineConfig({
       "/health": "http://localhost:8000",
     },
   },
+  preview: {
+    host: "0.0.0.0",
+    allowedHosts: true,
+  },
 });
