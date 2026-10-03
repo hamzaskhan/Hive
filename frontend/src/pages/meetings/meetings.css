@@ -1,0 +1,487 @@
+.meet-page {
+  min-height: 100vh;
+}
+
+.meet-page--room {
+  display: flex;
+  flex-direction: column;
+}
+
+.meet-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.1rem 1.25rem;
+}
+
+.meet-top__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.meet-flash {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 20;
+  width: min(420px, calc(100% - 2rem));
+  margin: 0 auto 0.5rem;
+  padding: 0.7rem 1rem;
+  text-align: center;
+  font-weight: 800;
+  background: var(--lime);
+  border: var(--line);
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+  animation: pop 0.35s var(--ease-bounce) both;
+}
+
+.meet-main {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 0.5rem 1.25rem 3.5rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.meet-main--wide {
+  max-width: 760px;
+}
+
+.meet-room--live {
+  max-width: 1200px;
+  width: 100%;
+  flex: 1;
+}
+
+.meet-room__head {
+  margin-bottom: 0.75rem;
+}
+
+.meet-room__head h1 {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  margin: 0 0 0.35rem;
+}
+
+.meet-room__id {
+  font-weight: 700;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+  word-break: break-all;
+}
+
+.meet-room__id code {
+  font-weight: 800;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 0.1rem 0.4rem;
+}
+
+.meet-status {
+  font-weight: 800;
+}
+
+.meet-intro {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 36rem;
+}
+
+.meet-intro h1 {
+  font-size: clamp(2.4rem, 7vw, 3.4rem);
+  line-height: 0.95;
+}
+
+.meet-intro p {
+  font-weight: 700;
+  opacity: 0.8;
+  font-size: 1.02rem;
+}
+
+.meet-create {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.meet-create__form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.auth-error {
+  color: #b42318;
+  font-weight: 800;
+  background: #ffe1db;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+}
+
+.meet-list {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.35rem;
+}
+
+.meet-list__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.meet-list__head h2 {
+  font-size: 1.55rem;
+}
+
+.meet-list__sub {
+  margin-top: 0.15rem;
+  font-weight: 700;
+  opacity: 0.65;
+  font-size: 0.9rem;
+}
+
+.meet-empty {
+  border: 2px dashed rgba(23, 20, 23, 0.35);
+  border-radius: var(--radius);
+  padding: 1.25rem 1rem;
+  font-weight: 700;
+  opacity: 0.8;
+  text-align: center;
+}
+
+.meet-rows {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.meet-row {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1rem 1.1rem !important;
+  box-shadow: none;
+  border-width: 1px;
+  background: rgba(255, 250, 243, 0.92);
+}
+
+.meet-row:hover {
+  transform: none;
+}
+
+.meet-row__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.meet-row__identity {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.meet-row__identity h3 {
+  font-size: 1.15rem;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.meet-row__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.meet-row__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.85rem;
+  padding-top: 0.15rem;
+}
+
+.meet-row__join {
+  font-weight: 800;
+  font-size: 0.92rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+}
+
+.meet-row__join:hover {
+  opacity: 0.7;
+}
+
+.meet-row__link {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.meet-row__links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem 0.15rem;
+}
+
+.meet-row__links > button,
+.meet-more > button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  padding: 0.25rem 0.45rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.meet-row__links > button:hover,
+.meet-more > button:hover {
+  background: rgba(23, 20, 23, 0.06);
+  color: var(--ink);
+}
+
+.meet-row__links > button.is-on {
+  background: rgba(23, 20, 23, 0.08);
+  color: var(--ink);
+}
+
+.meet-more {
+  position: relative;
+}
+
+.meet-more__menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 5;
+  min-width: 180px;
+  display: grid;
+  padding: 0.35rem;
+  background: #fff;
+  border: 1px solid rgba(23, 20, 23, 0.18);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(23, 20, 23, 0.08);
+}
+
+.meet-more__menu button,
+.meet-more__menu a {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.meet-more__menu button:hover,
+.meet-more__menu a:hover {
+  background: rgba(23, 20, 23, 0.06);
+}
+
+.meet-more__menu .is-danger {
+  color: #9a3412;
+}
+
+.meet-drawer {
+  border-top: 2px solid rgba(23, 20, 23, 0.12);
+  padding-top: 0.85rem;
+  display: grid;
+  gap: 0.75rem;
+  animation: pop 0.35s var(--ease-bounce) both;
+}
+
+.meet-drawer__muted {
+  margin: 0;
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+.meet-details__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.meet-details__grid > div {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0.65rem;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.meet-details__label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.65;
+}
+
+.meet-people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.meet-people li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-weight: 800;
+  padding: 0.4rem 0.15rem;
+  border-bottom: 1px dashed rgba(23, 20, 23, 0.15);
+}
+
+.meet-people li:last-child {
+  border-bottom: 0;
+}
+
+.meet-drawer--share .meet-share-sheet__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.meet-drawer--share h4,
+.meet-notes__head h4 {
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.meet-share-sheet__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.meet-share-sheet__list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.meet-share-sheet__name {
+  display: block;
+  font-weight: 800;
+}
+
+.meet-share-sheet__email {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 0.7;
+  word-break: break-all;
+}
+
+.meet-share-sheet__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.meet-share-sheet__note {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.meet-notes {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.meet-notes__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.meet-notes__summary {
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.meet-notes__actions ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.3rem;
+  font-weight: 700;
+}
+
+.meet-notes__transcript {
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  padding: 0.55rem 0.75rem;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.meet-notes__transcript summary {
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.meet-notes__transcript p {
+  margin-top: 0.55rem;
+  white-space: pre-wrap;
+  font-weight: 650;
+  line-height: 1.55;
+  opacity: 0.9;
+}
+
+@media (max-width: 640px) {
+  .meet-row__bar {
+    align-items: flex-start;
+  }
+
+  .meet-more__menu {
+    right: auto;
+    left: 0;
+  }
+
+  .meet-details__grid {
+    grid-template-columns: 1fr;
+  }
+}

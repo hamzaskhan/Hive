@@ -1,0 +1,19 @@
+.meet-stage-live {
+  width: 100%;
+  min-height: min(70vh, 640px);
+  height: min(70vh, 640px);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #111;
+}
+
+.meet-stage-live .lk-video-conference {
+  height: 100%;
+}
+
+@media (min-width: 900px) {
+  .meet-stage-live {
+    min-height: 72vh;
+    height: 72vh;
+  }
+}

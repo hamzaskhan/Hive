@@ -1,0 +1,150 @@
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: var(--line);
+  border-radius: 999px;
+  padding: 0.78rem 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease-bounce), box-shadow 0.15s ease;
+  text-decoration: none;
+  user-select: none;
+}
+
+.ui-btn--sm {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.88rem;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.ui-btn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow);
+}
+
+.ui-btn--sm:hover:not(:disabled) {
+  box-shadow: 3px 3px 0 var(--ink);
+}
+
+.ui-btn:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+.ui-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.ui-btn--block {
+  width: 100%;
+}
+
+.ui-btn--lime {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.ui-btn--coral {
+  background: var(--coral);
+  color: #fff;
+}
+
+.ui-btn--ink {
+  background: var(--ink);
+  color: var(--lime);
+}
+
+.ui-btn--sky {
+  background: var(--sky);
+  color: var(--ink);
+}
+
+.ui-btn--ghost {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.ui-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.ui-field__label {
+  font-weight: 800;
+  font-size: 0.92rem;
+}
+
+.ui-field__hint {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.ui-input {
+  width: 100%;
+  border: var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  padding: 0.85rem 1rem;
+  box-shadow: inset 0 -3px 0 rgba(23, 20, 23, 0.06);
+  outline: none;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.ui-input:focus {
+  box-shadow: var(--shadow-sm);
+  transform: translate(-1px, -1px);
+}
+
+.ui-panel {
+  border: var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  background: var(--cream);
+  padding: 1.25rem;
+}
+
+.ui-panel--lime {
+  background: var(--lime);
+}
+
+.ui-panel--sky {
+  background: var(--sky);
+}
+
+.ui-panel--coral {
+  background: #ffd5cb;
+}
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  background: #fff;
+}
+
+.ui-badge--lime {
+  background: var(--lime);
+}
+
+.ui-badge--coral {
+  background: #ffc9bd;
+}
+
+.ui-badge--sky {
+  background: #c8ecff;
+}
+
+.ui-badge--ink {
+  background: var(--ink);
+  color: #fff;
+}
