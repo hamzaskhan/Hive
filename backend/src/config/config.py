@@ -24,7 +24,25 @@ LIVEKIT_API_KEY = os.getenv("LIVEKIT_API_KEY", "")
 LIVEKIT_API_SECRET = os.getenv("LIVEKIT_API_SECRET", "")
 # Optional; falls back to LIVEKIT_URL (wss) for the browser SDK
 LIVEKIT_WEBSOCKET_URL = os.getenv("LiveKit_WEBSOCKET_URL") or os.getenv("LIVEKIT_WEBSOCKET_URL") or ""
-PUBLIC_APP_URL = os.getenv("PUBLIC_APP_URL", "http://localhost:5173")
+
+# Production hosts. Local dev keeps localhost unless PUBLIC_APP_URL is set.
+PROD_APP_URL = "https://hive-production-3652.up.railway.app"
+PROD_API_URL = "https://hive-production-ff3e.up.railway.app"
+
+if os.getenv("PUBLIC_APP_URL"):
+    PUBLIC_APP_URL = os.getenv("PUBLIC_APP_URL", "")
+elif os.getenv("RAILWAY_ENVIRONMENT"):
+    PUBLIC_APP_URL = PROD_APP_URL
+else:
+    PUBLIC_APP_URL = "http://localhost:5173"
+
+_cors = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    PROD_APP_URL,
+]
+_cors.extend(origin.strip() for origin in os.getenv("CORS_ORIGINS", "").split(",") if origin.strip())
+CORS_ORIGINS = list(dict.fromkeys(_cors))
 
 # AWS S3 — LiveKit Egress writes here; boto3 builds/validates object URLs
 AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
