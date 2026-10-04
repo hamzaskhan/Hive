@@ -1,5 +1,6 @@
 import logging
 import uuid
+from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException, status
 
@@ -38,6 +39,7 @@ from src.models.meeting import (
 logger = logging.getLogger(__name__)
 
 DEFAULT_MEDIA = {"camera_on": True, "mic_on": True}
+MEETING_LIMIT = timedelta(hours=1)
 
 
 def share_path(meeting_id: str) -> str:
@@ -60,7 +62,39 @@ def to_public(doc: dict) -> MeetingPublic:
         share_url=share_url(mid),
         defaults=doc.get("defaults", DEFAULT_MEDIA),
         created_at=doc["created_at"],
+        ends_at=doc.get("ends_at"),
     )
+
+
+def _as_utc(value: datetime) -> datetime:
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc)
+
+
+async def _close_meeting(doc: dict) -> dict:
+    """Stop the recording, remove the room, and mark the meeting ended."""
+    if doc.get("status") == MeetingStatus.ended.value:
+        return doc
+    await _finalize_egress(doc)
+    await livekit_client.delete_room(doc["livekit_room_name"])
+    updated = await meeting_db.patch_meeting(
+        doc["meeting_id"],
+        {"status": MeetingStatus.ended.value, "updated_at": utcnow()},
+    )
+    return updated or {**doc, "status": MeetingStatus.ended.value}
+
+
+async def _expire_if_due(doc: dict) -> dict:
+    """Hard stop once ends_at has passed. Meetings without a start time are left alone."""
+    if doc.get("status") == MeetingStatus.ended.value:
+        return doc
+    ends_at = doc.get("ends_at")
+    if ends_at is None:
+        return doc
+    if utcnow() >= _as_utc(ends_at):
+        return await _close_meeting(doc)
+    return doc
 
 
 def meet_info_public(doc: dict) -> MeetInfoPublic:
@@ -279,6 +313,7 @@ async def join_meeting(meeting_id: str, user: dict) -> JoinMeetingResponse:
     doc = await meeting_db.get_meeting_by_id(meeting_id)
     if doc is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Meeting not found")
+    doc = await _expire_if_due(doc)
     if doc.get("status") == MeetingStatus.ended.value:
         raise HTTPException(status.HTTP_409_CONFLICT, "Meeting has ended")
 
@@ -288,9 +323,34 @@ async def join_meeting(meeting_id: str, user: dict) -> JoinMeetingResponse:
     became_live = False
 
     if doc.get("status") == MeetingStatus.scheduled.value:
-        await meeting_db.set_meeting_status(meeting_id, MeetingStatus.live.value)
-        doc["status"] = MeetingStatus.live.value
+        ends_at = now + MEETING_LIMIT
+        updated = await meeting_db.patch_meeting(
+            meeting_id,
+            {
+                "status": MeetingStatus.live.value,
+                "started_at": now,
+                "ends_at": ends_at,
+                "updated_at": now,
+            },
+        )
+        doc = updated or {
+            **doc,
+            "status": MeetingStatus.live.value,
+            "started_at": now,
+            "ends_at": ends_at,
+        }
         became_live = True
+    elif doc.get("status") == MeetingStatus.live.value and not doc.get("ends_at"):
+        anchor = _as_utc(doc.get("started_at") or doc.get("created_at") or now)
+        ends_at = anchor + MEETING_LIMIT
+        updated = await meeting_db.patch_meeting(
+            meeting_id,
+            {"started_at": anchor, "ends_at": ends_at, "updated_at": now},
+        )
+        doc = updated or {**doc, "started_at": anchor, "ends_at": ends_at}
+        doc = await _expire_if_due(doc)
+        if doc.get("status") == MeetingStatus.ended.value:
+            raise HTTPException(status.HTTP_409_CONFLICT, "Meeting has ended")
 
     info = await meet_info_db.get_meet_info(meeting_id)
     if info is None:
@@ -315,11 +375,17 @@ async def join_meeting(meeting_id: str, user: dict) -> JoinMeetingResponse:
     if became_live or doc.get("status") == MeetingStatus.live.value:
         await _ensure_egress_started(doc)
 
+    remaining = _as_utc(doc["ends_at"]) - utcnow()
+    if remaining.total_seconds() <= 1:
+        await _close_meeting(doc)
+        raise HTTPException(status.HTTP_409_CONFLICT, "Meeting has ended")
+
     token = livekit_client.mint_participant_token(
         room_name=doc["livekit_room_name"],
         identity=user["user_id"],
         name=user.get("full_name") or user["email"],
         is_owner=is_owner,
+        ttl=remaining,
     )
     return JoinMeetingResponse(
         meeting=to_public(doc),
@@ -339,9 +405,18 @@ async def end_meeting(meeting_id: str, user: dict) -> MeetingPublic:
     if doc.get("status") == MeetingStatus.ended.value:
         return to_public(doc)
 
-    await _finalize_egress(doc)
-    updated = await meeting_db.set_meeting_status(meeting_id, MeetingStatus.ended.value)
-    return to_public(updated or {**doc, "status": MeetingStatus.ended.value})
+    closed = await _close_meeting(doc)
+    return to_public(closed)
+
+
+async def apply_time_limit(meeting_id: str, user: dict) -> MeetingPublic:
+    """Any member can ask the server to close a meeting whose hour is up."""
+    await _require_membership(user["user_id"], meeting_id)
+    doc = await meeting_db.get_meeting_by_id(meeting_id)
+    if doc is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Meeting not found")
+    closed = await _expire_if_due(doc)
+    return to_public(closed)
 
 
 async def list_my_meetings(user: dict) -> MeetingListResponse:
@@ -351,6 +426,7 @@ async def list_my_meetings(user: dict) -> MeetingListResponse:
         meeting = await meeting_db.get_meeting_by_id(log["meeting_id"])
         if meeting is None:
             continue
+        meeting = await _expire_if_due(meeting)
         role = MembershipRole(log.get("role", "participant"))
         mid = meeting["meeting_id"]
         items.append(
@@ -373,6 +449,7 @@ async def get_meeting(meeting_id: str) -> MeetingPublic:
     doc = await meeting_db.get_meeting_by_id(meeting_id)
     if doc is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Meeting not found")
+    doc = await _expire_if_due(doc)
     return to_public(doc)
 
 

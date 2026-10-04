@@ -32,3 +32,11 @@ async def set_meeting_status(meeting_id: str, status: str) -> dict | None:
         {"$set": {"status": status}},
         return_document=True,
     )
+
+
+async def patch_meeting(meeting_id: str, fields: dict) -> dict | None:
+    return await meetings().find_one_and_update(
+        {"meeting_id": meeting_id},
+        {"$set": fields},
+        return_document=True,
+    )

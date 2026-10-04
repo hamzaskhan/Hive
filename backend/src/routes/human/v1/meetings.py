@@ -49,6 +49,12 @@ async def end_meeting(meeting_id: str, user: dict = Depends(get_current_user)):
     return await meeting_service.end_meeting(meeting_id, user)
 
 
+@router.post("/{meeting_id}/limit", response_model=MeetingPublic)
+async def apply_time_limit(meeting_id: str, user: dict = Depends(get_current_user)):
+    """Close the meeting when its one-hour limit has passed."""
+    return await meeting_service.apply_time_limit(meeting_id, user)
+
+
 @router.get("/{meeting_id}/info", response_model=MeetInfoPublic)
 async def get_meet_info(meeting_id: str, user: dict = Depends(get_current_user)):
     """In-meet info (participants, transcript id, audio). Members only."""

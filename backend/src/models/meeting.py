@@ -29,6 +29,7 @@ class MeetingPublic(BaseModel):
     share_url: str
     defaults: dict
     created_at: datetime
+    ends_at: datetime | None = None
 
 
 class CreateMeetingResponse(BaseModel):

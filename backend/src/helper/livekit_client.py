@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 
 from livekit import api
@@ -5,6 +6,7 @@ from livekit import api
 from src.config.config import LIVEKIT_API_KEY, LIVEKIT_API_SECRET, LIVEKIT_URL, LIVEKIT_WEBSOCKET_URL
 
 TOKEN_TTL = timedelta(hours=6)
+logger = logging.getLogger(__name__)
 
 
 def _require_livekit_creds() -> None:
@@ -56,12 +58,24 @@ async def create_room(room_name: str, *, empty_timeout: int = 60 * 30, max_parti
         await lk.aclose()
 
 
+async def delete_room(room_name: str) -> None:
+    """Kick everyone out. Missing rooms are fine."""
+    lk = livekit_api()
+    try:
+        await lk.room.delete_room(api.DeleteRoomRequest(room=room_name))
+    except Exception:
+        logger.info("LiveKit room %s was already gone", room_name)
+    finally:
+        await lk.aclose()
+
+
 def mint_participant_token(
     *,
     room_name: str,
     identity: str,
     name: str,
     is_owner: bool,
+    ttl: timedelta | None = None,
 ) -> str:
     """Mint a short-lived join token. ACL is deferred — everyone can publish cam/mic."""
     _require_livekit_creds()
@@ -79,7 +93,7 @@ def mint_participant_token(
         api.AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET)
         .with_identity(identity)
         .with_name(name)
-        .with_ttl(TOKEN_TTL)
+        .with_ttl(ttl or TOKEN_TTL)
         .with_grants(grants)
         .with_metadata('{"role":"%s"}' % ("owner" if is_owner else "participant"))
         .to_jwt()
