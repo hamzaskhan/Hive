@@ -346,7 +346,10 @@ export function MeetingsPage() {
               const showNotes = isOpen(row.meeting_id, "notes");
 
               return (
-                <Panel key={row.meeting_id} className="meet-row anim-pop">
+                <Panel
+                  key={row.meeting_id}
+                  className={`meet-row anim-pop${moreFor === row.meeting_id ? " is-menu-open" : ""}`}
+                >
                   <div className="meet-row__top">
                     <div className="meet-row__identity">
                       <h3>{row.title}</h3>

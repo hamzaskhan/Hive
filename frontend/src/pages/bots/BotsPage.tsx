@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, Navigate, useSearchParams } from "react-router-dom";
+import { SiteNav } from "../../components/layout/SiteNav";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { Panel, Badge } from "../../components/ui/Panel";
-import { api, clearTokens, isLoggedIn } from "../../lib/api";
+import { api, isLoggedIn } from "../../lib/api";
 import "../meetings/meetings.css";
 import "./bots.css";
 
@@ -29,7 +30,6 @@ type IssuedInvite = {
 };
 
 export function BotsPage() {
-  const nav = useNavigate();
   const [params] = useSearchParams();
   const presetMeeting = params.get("meeting") || "";
 
@@ -116,30 +116,8 @@ export function BotsPage() {
   }
 
   return (
-    <div className="meet-page">
-      <header className="meet-top">
-        <Link to="/meetings" className="auth-brand">
-          <span className="site-nav__mark" aria-hidden>
-            ◉
-          </span>{" "}
-          Hive
-        </Link>
-        <div className="meet-top__actions">
-          <Button tone="ghost" size="sm" to="/agent">
-            Agent portal
-          </Button>
-          <Button
-            tone="ghost"
-            size="sm"
-            onClick={() => {
-              clearTokens();
-              nav("/");
-            }}
-          >
-            Log out
-          </Button>
-        </div>
-      </header>
+    <div className="meet-page bots-page">
+      <SiteNav />
 
       {flash ? (
         <div className="meet-flash" role="status">
@@ -321,6 +299,15 @@ export function BotsPage() {
           )}
         </section>
       </main>
+      <footer className="bots-foot">
+        <Link to="/" className="site-nav__brand" aria-label="Hive home">
+          <span className="site-nav__mark" aria-hidden>
+            ◉
+          </span>
+          <span className="site-nav__word">Hive</span>
+        </Link>
+        <p>Meetings for people, with room for the bots you trust.</p>
+      </footer>
     </div>
   );
 }
