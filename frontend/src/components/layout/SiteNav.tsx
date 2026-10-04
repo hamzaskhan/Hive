@@ -12,14 +12,16 @@ export function SiteNav({ solid = false }: { solid?: boolean }) {
         <span className="site-nav__word">Hive</span>
       </Link>
       <nav className="site-nav__links" aria-label="Primary">
-        <a href="/#humans">Humans</a>
+        <a href="/#humans">People</a>
         <a href="/#bots">Bots</a>
         <NavLink to="/agent">Agent portal</NavLink>
-        <NavLink to="/login">Log in</NavLink>
       </nav>
       <div className="site-nav__cta">
+        <Link to="/login" className="site-nav__login">
+          Log in
+        </Link>
         <Button to="/signup" tone="ink">
-          Start free
+          Sign up
         </Button>
       </div>
     </header>

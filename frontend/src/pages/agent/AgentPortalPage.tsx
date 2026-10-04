@@ -12,7 +12,7 @@ type Step = "id" | "secret" | "notes";
 
 /**
  * AI-friendly portal for ChatGPT Dots / browser agents.
- * Plain steps, clear labels, markdown notes — no human chrome clutter.
+ * Plain steps, clear labels, and markdown notes.
  */
 export function AgentPortalPage() {
   const [step, setStep] = useState<Step>("id");
@@ -91,7 +91,7 @@ export function AgentPortalPage() {
       setError(
         err instanceof Error
           ? err.message
-          : "Verification failed — account may be deleted",
+          : "That answer was not accepted. The invite may have been deleted.",
       );
     } finally {
       setBusy(false);
@@ -113,10 +113,10 @@ export function AgentPortalPage() {
   return (
     <main className="agent-portal" data-agent-portal="true">
       <header className="agent-portal__header">
-        <p className="agent-portal__brand">Hive · Agent portal</p>
+        <p className="agent-portal__brand">Hive agent portal</p>
         <p className="agent-portal__for">
-          Agents: read <a href="/AGENTS.md">AGENTS.md</a> first, then follow the steps below.
-          Humans issue invites at <Link to="/bots">/bots</Link>.
+          If you are a bot, read <a href="/AGENTS.md">AGENTS.md</a> first, then follow the steps
+          below. People create invites on the <Link to="/bots">bots page</Link>.
         </p>
       </header>
 
@@ -142,7 +142,7 @@ export function AgentPortalPage() {
         <form className="agent-portal__card" onSubmit={submitId} data-step="unique-id">
           <h1>Step 1 — Enter unique ID</h1>
           <p>
-            Paste the one-time <code>hive_bot_…</code> ID the human gave you. This ID can only be
+            Paste the one-time <code>hive_bot_…</code> ID the person gave you. This ID can only be
             used once.
           </p>
           <label htmlFor="unique_id">
@@ -168,7 +168,7 @@ export function AgentPortalPage() {
         <form className="agent-portal__card" onSubmit={submitSecret} data-step="secret-question">
           <h1>Step 2 — Secret question</h1>
           <p>
-            Bot: <strong>{label}</strong> · Meeting: <strong>{meetingTitle}</strong>
+            This invite is for <strong>{label}</strong>, in the meeting <strong>{meetingTitle}</strong>.
           </p>
           <p className="agent-portal__warn">{hint}</p>
           <p className="agent-portal__question" data-secret-question="true">
@@ -187,7 +187,7 @@ export function AgentPortalPage() {
             />
           </label>
           <button type="submit" disabled={busy}>
-            {busy ? "Verifying…" : "Verify (one attempt only)"}
+            {busy ? "Verifying…" : "Verify"}
           </button>
         </form>
       ) : null}
@@ -196,11 +196,13 @@ export function AgentPortalPage() {
         <section className="agent-portal__card" data-step="notes">
           <h1>Step 3 — Meeting notes</h1>
           <p>
-            Bot: <strong>{label}</strong> · Meeting: <strong>{meetingTitle}</strong>
+            These notes are for <strong>{label}</strong>, from the meeting{" "}
+            <strong>{meetingTitle}</strong>.
             {expiresAt ? (
               <>
                 {" "}
-                · Expires: <time dateTime={expiresAt}>{new Date(expiresAt).toLocaleString()}</time>
+                This invite expires{" "}
+                <time dateTime={expiresAt}>{new Date(expiresAt).toLocaleString()}</time>.
               </>
             ) : null}
           </p>
@@ -222,8 +224,9 @@ export function AgentPortalPage() {
             </button>
           </div>
           <p>
-            API for agents with a bearer token: <code>GET /agent/v1/notes.md</code>
-          </p>          <pre className="agent-portal__markdown" data-notes-markdown="true">
+            If you are calling the API with a bearer token, use <code>GET /agent/v1/notes.md</code>.
+          </p>
+          <pre className="agent-portal__markdown" data-notes-markdown="true">
             {markdown}
           </pre>
         </section>

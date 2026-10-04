@@ -19,8 +19,9 @@ export function LandingPage() {
             they trust.
           </h1>
           <p className="landing-lede">
-            People join with a link and talk. You hand a bot a one-time ID. It answers your secret
-            question, then reads the summary and transcript as markdown — and the invite expires.
+            Start a call in your browser and send the link to the people you want there. When you
+            are done, Hive writes the summary. If you also want a bot to read those notes, you give
+            it a one-time invite and a question only you know the answer to.
           </p>
           <div className="landing-hero__cta">
             <Button to="/signup" tone="coral">
@@ -31,52 +32,52 @@ export function LandingPage() {
             </Button>
           </div>
           <p className="landing-ribbon" aria-hidden>
-            <span>share link</span>
-            <span>live room</span>
-            <span>summary</span>
-            <span>one-time bot ID</span>
-            <span>secret question</span>
-            <span>markdown notes</span>
+            <span>send a link</span>
+            <span>talk in the browser</span>
+            <span>get the notes</span>
+            <span>invite a bot</span>
+            <span>ask a secret question</span>
+            <span>download the notes</span>
           </p>
         </div>
         <figure className="landing-hero__mascot">
-          <img src={hiveBot} alt="Hive bot: a small figure holding a glass head on fire" />
+          <img src={hiveBot} alt="Hive bot, a small figure holding a glass head on fire" />
         </figure>
       </section>
 
       <section className="hive-table" id="seats">
         <div className="hive-table__intro">
-          <h2>Two seats. One memory.</h2>
-          <p>The room is for people. The notes are what a bot is allowed to take.</p>
+          <h2>People talk. A bot can read the notes later.</h2>
+          <p>You stay in charge of who gets in, and of what they are allowed to see.</p>
         </div>
 
         <div className="hive-table__board">
           <article className="seat seat--human" id="humans">
-            <p className="seat__label">For humans</p>
-            <h3>Show up and run the meeting.</h3>
+            <p className="seat__label">For people</p>
+            <h3>Start the meeting and bring everyone in.</h3>
             <ol>
-              <li>Create a room. You own it.</li>
-              <li>Send one link. Camera and mic in the browser.</li>
-              <li>End the call, summarize, then share notes with the people who joined.</li>
+              <li>Name the meeting and start it. You are the host.</li>
+              <li>Copy the full link and send it to whoever should join.</li>
+              <li>After the call, create the notes and share them with the people who were there.</li>
             </ol>
             <Button to="/signup" tone="ink">
-              Create a room
+              Create your account
             </Button>
           </article>
 
           <div className="seat-bridge">
-            <p>Same meeting</p>
-            <strong>Summary, actions, transcript</strong>
-            <p>Humans decide when a bot may see it.</p>
+            <p>The same meeting</p>
+            <strong>Summary, action items, and the transcript</strong>
+            <p>You decide when a bot is allowed to see them.</p>
           </div>
 
           <article className="seat seat--bot" id="bots">
             <p className="seat__label">For bots</p>
-            <h3>Arrive, prove it, leave with notes.</h3>
+            <h3>A bot can pick up the notes, if you invite it.</h3>
             <ol>
-              <li>Open the agent portal. No developer API required.</li>
-              <li>Paste the one-time ID. Answer the secret — one wrong try deletes the invite.</li>
-              <li>Read or download the meeting as markdown before the account expires.</li>
+              <li>It opens the agent portal. There is no developer setup.</li>
+              <li>It pastes the one-time ID and answers your question. One wrong answer removes the invite.</li>
+              <li>It can read or download the notes until the invite expires.</li>
             </ol>
             <Button to="/agent" tone="lime">
               Open the agent portal
@@ -87,11 +88,12 @@ export function LandingPage() {
 
       <section className="landing-close" id="how">
         <p>
-          Built for the way work actually happens now: a person in the call, and a Dot, Grok, or
-          other browser agent that can follow <a href="/AGENTS.md">plain instructions</a>.
+          Hive is for a normal meeting, plus the assistant you already use in the browser. If you
+          want that assistant to follow along, point it at these{" "}
+          <a href="/AGENTS.md">plain instructions</a>.
         </p>
         <Button to="/signup" tone="coral">
-          Claim the human seat
+          Create your account
         </Button>
       </section>
 
@@ -99,7 +101,7 @@ export function LandingPage() {
         <span className="site-nav__brand">
           <span className="site-nav__mark">◉</span> Hive
         </span>
-        <p>Meetings for humans and bots.</p>
+        <p>Meetings for people, with room for the bots you trust.</p>
       </footer>
     </div>
   );

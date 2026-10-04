@@ -65,7 +65,7 @@ export function ForgotPasswordPage() {
       title="Reset password"
       subtitle={
         step === "email"
-          ? "We’ll email a 6-digit code from hamzaskhaan@gmail.com."
+          ? "We will email you a 6 digit code."
           : step === "otp"
             ? `Enter the code sent to ${email}.`
             : "Choose a new password."

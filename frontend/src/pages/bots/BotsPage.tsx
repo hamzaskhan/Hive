@@ -106,7 +106,7 @@ export function BotsPage() {
         label: data.account.label,
       });
       setAnswer("");
-      setFlash("Bot invite created — copy the unique ID now (shown once)");
+      setFlash("Invite created. Copy the ID now. It will not be shown again.");
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create bot account");
@@ -149,15 +149,15 @@ export function BotsPage() {
 
       <main className="meet-main meet-main--wide">
         <Link to="/meetings" className="bots-back">
-          ← Back to meetings
+          Back to meetings
         </Link>
         <section className="meet-intro anim-in">
-          <Badge tone="sky">Bot IAM</Badge>
-          <h1>Invite a Dot</h1>
+          <Badge tone="sky">Bot invites</Badge>
+          <h1>Invite a bot</h1>
           <p>
-            Mint a one-time sub-account for a browser agent (ChatGPT Dot, etc.). They log into the
-            agent portal with the unique ID, answer your secret question once, then read meeting
-            notes as markdown. Wrong answer burns the invite. Access expires automatically.
+            Create a one-time login for a browser assistant. Tell it the ID and the answer to your
+            question. It can then read this meeting's notes. A wrong answer deletes the invite, and
+            the invite expires on its own.
           </p>
         </section>
 
@@ -196,7 +196,7 @@ export function BotsPage() {
               required
             />
             <Input
-              label="Secret answer (agent must match)"
+              label="Answer the bot must give"
               name="secret_answer"
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
@@ -215,14 +215,14 @@ export function BotsPage() {
             </label>
             {error ? <p className="auth-error">{error}</p> : null}
             <Button type="submit" tone="coral" block disabled={busy || ownedMeetings.length === 0}>
-              {busy ? "Creating…" : "Generate one-time bot ID"}
+              {busy ? "Creating…" : "Create the invite"}
             </Button>
           </form>
         </Panel>
 
         {issued ? (
           <Panel tone="lime" className="bots-issued anim-pop">
-            <h2>Show this to your agent once</h2>
+            <h2>Show this to your bot once</h2>
             <p className="bots-issued__id">
               <code>{issued.unique_id}</code>
             </p>
@@ -233,10 +233,10 @@ export function BotsPage() {
                 type="button"
                 onClick={() => {
                   void navigator.clipboard.writeText(issued.unique_id);
-                  setFlash("Unique ID copied");
+                  setFlash("ID copied");
                 }}
               >
-                Copy unique ID
+                Copy the ID
               </Button>
               <Button
                 tone="ghost"
@@ -252,8 +252,8 @@ export function BotsPage() {
             </div>
             <pre className="bots-issued__instructions">{issued.instructions}</pre>
             <p className="bots-issued__note">
-              Portal: <Link to="/agent">{issued.portal_url || "/agent"}</Link>. The unique ID is not
-              stored in plaintext and will not be shown again.
+              The bot signs in at <Link to="/agent">{issued.portal_url || "/agent"}</Link>. Copy the
+              ID before you leave. It will not be shown again.
             </p>
           </Panel>
         ) : null}
@@ -261,7 +261,7 @@ export function BotsPage() {
         <section className="meet-list">
           <div className="meet-list__head">
             <div>
-              <h2>Your bot accounts</h2>
+              <h2>Your invites</h2>
               <p className="meet-list__sub">{bots.length} invite{bots.length === 1 ? "" : "s"}</p>
             </div>
             <Button tone="ghost" size="sm" type="button" onClick={() => void load()}>
@@ -271,7 +271,7 @@ export function BotsPage() {
 
           {bots.length === 0 ? (
             <div className="meet-empty">
-              <p>No bot invites yet. Create one above after you own a meeting.</p>
+              <p>No invites yet. Start a meeting first, then create one here.</p>
             </div>
           ) : (
             <div className="meet-rows">
@@ -300,7 +300,7 @@ export function BotsPage() {
                       onClick={async () => {
                         try {
                           await api.revokeAgentAccount(bot.agent_account_id);
-                          setFlash("Bot account revoked");
+                          setFlash("Invite removed");
                           await load();
                         } catch (err) {
                           setError(err instanceof Error ? err.message : "Revoke failed");

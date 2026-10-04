@@ -49,8 +49,8 @@ export function LoginPage() {
       title="Welcome back"
       subtitle={
         pendingRoom
-          ? `Sign in to join the meeting, then we’ll take you to ${pendingRoom}.`
-          : "Log in to open your rooms."
+          ? "Sign in and we will take you into the meeting."
+          : "Log in to see your meetings and start a new one."
       }
       footer={
         <>

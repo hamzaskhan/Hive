@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/Button";
 import { Input } from "../../components/ui/Input";
 import { Panel, Badge } from "../../components/ui/Panel";
+import { ShareLinkDialog } from "../../components/meetings/ShareLinkDialog";
 import { api, clearTokens, isLoggedIn } from "../../lib/api";
 import "./meetings.css";
 
@@ -81,6 +82,7 @@ export function MeetingsPage() {
   const [shareById, setShareById] = useState<
     Record<string, SharePreview | "loading" | "error" | "sharing">
   >({});
+  const [linkFor, setLinkFor] = useState<string | null>(null);
 
   const loadMine = useCallback(async () => {
     try {
@@ -119,10 +121,6 @@ export function MeetingsPage() {
     setError("");
     try {
       const data = await api.createMeeting(title);
-      const share =
-        data.meeting.share_url || `${window.location.origin}${data.meeting.share_path}`;
-      await navigator.clipboard.writeText(share).catch(() => undefined);
-      setFlash("Room ready — share link copied");
       sessionStorage.setItem(
         `hive_join_${data.meeting.meeting_id}`,
         JSON.stringify({
@@ -132,7 +130,7 @@ export function MeetingsPage() {
         }),
       );
       await loadMine();
-      nav(`/m/${data.meeting.meeting_id}`);
+      nav(`/m/${data.meeting.meeting_id}`, { state: { showShare: true } });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create meeting");
     } finally {
@@ -228,7 +226,7 @@ export function MeetingsPage() {
           shared: true,
         },
       }));
-      setFlash("Transcript shared with participants");
+      setFlash("Notes shared with the people who joined.");
     } catch (err) {
       setShareById((prev) => ({ ...prev, [meetingId]: "error" }));
       setListError(err instanceof Error ? err.message : "Share failed");
@@ -256,10 +254,8 @@ export function MeetingsPage() {
     }
   }
 
-  async function copyLink(row: MeetingRow) {
-    const url = row.share_url || `${window.location.origin}${row.share_path}`;
-    await navigator.clipboard.writeText(url).catch(() => undefined);
-    setFlash("Link copied");
+  function copyLink(row: MeetingRow) {
+    setLinkFor(row.meeting_id);
   }
 
   return (
@@ -296,9 +292,9 @@ export function MeetingsPage() {
 
       <main className="meet-main meet-main--wide">
         <section className="meet-intro anim-in">
-          <Badge tone="lime">Your rooms</Badge>
+          <Badge tone="lime">Your meetings</Badge>
           <h1>Meetings</h1>
-          <p>Create a room, share the link, then summarize and share notes with everyone who joined.</p>
+          <p>Start a meeting, send the link to the people you want there, then come back for the notes.</p>
         </section>
 
         <Panel className="meet-create anim-pop">
@@ -312,7 +308,7 @@ export function MeetingsPage() {
             />
             {error ? <p className="auth-error">{error}</p> : null}
             <Button type="submit" tone="coral" block disabled={busy}>
-              {busy ? "Creating…" : "Create & join"}
+              {busy ? "Starting…" : "Start meeting"}
             </Button>
           </form>
         </Panel>
@@ -322,7 +318,9 @@ export function MeetingsPage() {
             <div>
               <h2>All meetings</h2>
               <p className="meet-list__sub">
-                {rows.length === 0 ? "Nothing here yet" : `${rows.length} room${rows.length === 1 ? "" : "s"}`}
+                {rows.length === 0
+                  ? "Nothing here yet"
+                  : `${rows.length} meeting${rows.length === 1 ? "" : "s"}`}
               </p>
             </div>
             <Button tone="ghost" size="sm" type="button" onClick={() => void loadMine()}>
@@ -334,7 +332,7 @@ export function MeetingsPage() {
 
           {rows.length === 0 && !listError ? (
             <div className="meet-empty">
-              <p>Start a room above, or open a share link someone sent you.</p>
+              <p>Start a meeting above, or open a link someone sent you.</p>
             </div>
           ) : null}
 
@@ -438,7 +436,7 @@ export function MeetingsPage() {
                                     setMoreFor(null);
                                     try {
                                       await api.endMeeting(row.meeting_id);
-                                      setFlash("Meeting ended — audio saving");
+                                      setFlash("Meeting ended. The recording is saving.");
                                       await loadMine();
                                     } catch (err) {
                                       setListError(
@@ -520,7 +518,7 @@ export function MeetingsPage() {
                           </div>
                           {shareSheet.participants.length === 0 ? (
                             <p className="meet-drawer__muted">
-                              No participants yet — they appear after someone joins.
+                              No one else has joined yet. Send them the meeting link first.
                             </p>
                           ) : (
                             <ul className="meet-share-sheet__list">
@@ -547,7 +545,7 @@ export function MeetingsPage() {
                               </Button>
                             ) : (
                               <p className="meet-share-sheet__note">
-                                Participants can open Notes on their meetings list.
+                                They can open Notes from their meetings list.
                               </p>
                             )}
                             <Button
@@ -572,7 +570,7 @@ export function MeetingsPage() {
                       {notes === "error" ? (
                         <p className="auth-error">
                           {row.role === "participant"
-                            ? "Notes aren’t shared yet — ask the owner to share."
+                            ? "These notes are still private. Ask the host to share them."
                             : "Notes unavailable"}
                         </p>
                       ) : null}
@@ -587,7 +585,7 @@ export function MeetingsPage() {
                           <p className="meet-notes__summary">
                             {notes.summary ||
                               (row.role === "owner"
-                                ? "No summary yet — hit Summarize after the call."
+                                ? "No summary yet. After the call, open More and choose Summarize."
                                 : "No summary yet.")}
                           </p>
                           {notes.action_items?.length ? (
@@ -616,6 +614,11 @@ export function MeetingsPage() {
           </div>
         </section>
       </main>
+      <ShareLinkDialog
+        meetingId={linkFor ?? ""}
+        open={Boolean(linkFor)}
+        onClose={() => setLinkFor(null)}
+      />
     </div>
   );
 }

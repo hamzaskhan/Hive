@@ -57,6 +57,23 @@
   text-underline-offset: 5px;
 }
 
+.site-nav__cta {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.site-nav__login {
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.site-nav__login:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+}
+
 @media (min-width: 820px) {
   .site-nav__links {
     display: flex;

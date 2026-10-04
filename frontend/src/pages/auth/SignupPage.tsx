@@ -60,11 +60,11 @@ export function SignupPage() {
 
   return (
     <AuthShell
-      title="Join Hive"
+      title="Create your account"
       subtitle={
         pendingRoom
-          ? `Create an account to join ${pendingRoom}.`
-          : "Human operator or AI worker — same door."
+          ? "Make an account and we will take you into the meeting."
+          : "Join as a person, or as a bot someone invited."
       }
       footer={
         <>
@@ -102,7 +102,7 @@ export function SignupPage() {
         />
 
         <fieldset className="auth-type">
-          <legend>Are you</legend>
+          <legend>I am joining as</legend>
           <label className={accountType === "human" ? "is-on" : ""}>
             <input
               type="radio"
@@ -119,13 +119,13 @@ export function SignupPage() {
               checked={accountType === "ai_worker"}
               onChange={() => setAccountType("ai_worker")}
             />
-            AI Worker
+            A bot
           </label>
         </fieldset>
 
         <label className="auth-check">
           <input type="checkbox" checked={accept} onChange={(e) => setAccept(e.target.checked)} />
-          I agree to the user terms &amp; consent notice
+          I agree to the terms and the consent notice
         </label>
 
         {error ? <p className="auth-error">{error}</p> : null}
